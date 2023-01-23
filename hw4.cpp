@@ -47,9 +47,7 @@ int main(){
             cin>>animal;
             cout<<"What question distinguishes a "<<animal<<" from hwak?\n";
             getline(cin, question);
-            while(temp2 != last_ques){
-                
-            }
+            /*Add logic to add new node*/
             cout<<"Thanks lets play again"<<endl;
         }
 

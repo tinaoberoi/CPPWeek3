@@ -5,40 +5,22 @@ static int i = 1;
 
 struct  A
 {
-    A() {cout<<"Hello World from A"<<endl;};
+    A() {cout<<"Hello ";};
 };
 
-struct  B
+struct  C : public A
 {
-    B() {cout<<"Hello World from B"<<endl;};
-};
-
-struct  C : public A, public B
-{
-    C() {
-        cout<<"Hello World from C"<<endl;
+    C(){
+        cout<<"World!"<<endl;
+    }
+    explicit C(int i) {
+        cout<<"World!!!"<<endl;
     };
 };
-
-struct  D : public B, public A
-{
-    D() {
-        cout<<"_________________"<<endl;
-        cout<<"Hello World from D"<<endl;
-    };
-};
-
-static void printx(){
-    cout<<"Hello World!"<<endl;
-}
 
 int main(){
-    cout<<"Hello World from main!"<<endl;
     return 0;
 }
 
-static A a1;
-static A a2;
-static B b1;
-static C c1;
-static D d1;
+static C c(1)
+//static C c1;

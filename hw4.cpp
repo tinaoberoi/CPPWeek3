@@ -1,56 +1,106 @@
 #include <iostream>
 #include <map>
+#include <string>
 
 using namespace std;
 
 class TreeNode {
     public:
-        string ques;
-        TreeNode* yes;
-        TreeNode* no;
-    TreeNode(string s){
-        ques = s;
-        yes = NULL;
-        no = NULL;
+        string key;
+        TreeNode* left;
+        TreeNode* right;
+        TreeNode* parent;
+        bool isLeaf;
+
+    TreeNode(){
+        key = "";
+        left = NULL;
+        right = NULL;
+        parent = NULL;
+        isLeaf = false;
     };
-    
+    TreeNode(string s, TreeNode* leftNode, TreeNode* rightNode, bool isAnimal){
+        key = s;
+        left = leftNode;
+        right = rightNode;
+        isLeaf = isAnimal;
+    };
+
+};
+
+class Tree{
+    public:
+        TreeNode* root;
+        Tree (){
+            root = NULL;
+        }
+        void initializeTree(){
+            TreeNode* left = new TreeNode("Is it a hawk?", NULL, NULL, true);
+            TreeNode* right = new TreeNode("Is it a dog?", NULL, NULL, true);
+            root = new TreeNode("Does it fly?", left, right, false);
+            left->parent = root;
+            right->parent = root;
+        }
 };
 
 int main(){
-    TreeNode* head = new TreeNode("Does it fly?");
-    TreeNode* yes_ans = new TreeNode("Is it a hawk?");
-    head->yes = yes_ans;
-    TreeNode* no_ans = new TreeNode("Is it an ox?");
-    head->no = no_ans;
-    
+    Tree t;
+    t.initializeTree();
     bool flag = true;
     while(flag){
-        cout<<"Think of an animal"<<endl;
-        TreeNode* temp = head;
-        string ans;
-        TreeNode* last_ques;
-        while(temp){
-            cout<<temp->ques<<endl;
-            cin>>ans;
-            if (ans == "y" || ans == "yes"){
-                temp = temp->yes;
-                last_ques = temp;
+        cout<<"Welcome to animal game. Think of an animal"<<endl;
+        TreeNode* temp = t.root;
+        while(true){
+            auto x = temp->key;
+            cout<<temp->key<<endl;
+            string ans;
+            getline(cin, ans);
+            if (ans == "yes" || ans == "y"){
+                if(temp->isLeaf){
+                    cout<<"I win!"<<endl;
+                    break;
+                } else {
+                    temp = temp->left;
+                }
+            } else if (ans == "no" || ans == "n") {
+                if (temp->isLeaf){
+                    cout<<"You win! What was it? ";
+                    string newanimal, newques;
+                    getline(cin,newanimal);
+                    cout<<"What question distinguishes a " + newanimal + " ? ";
+                    getline(cin, newques);
+                    TreeNode* tparent = temp->parent;
+                    if(tparent->left == temp){
+                        TreeNode* ttleft = new TreeNode("Is it a " + newanimal, NULL, NULL, true);
+                        TreeNode* tleft = new TreeNode(newques, ttleft, temp, false);
+                        tparent->left = tleft;
+                        temp->parent = tleft;
+                        temp = t.root;
+                    } else {
+                        TreeNode* ttleft = new TreeNode("Is it a " + newanimal, NULL, NULL, true);
+                        TreeNode* tright = new TreeNode(newques, ttleft, temp, false);
+                        tparent->right= tright;
+                        temp->parent = tright;
+                        temp = t.root;
+                    }
+                    cout<<"You want to play again? Enter q to quit the game or enter to continue. If you want to start over type 'forget' to start fresh ";
+                    string playagain;
+                    getline(cin, playagain);
+                    if(playagain == "q"){
+                        flag = false;
+                    } else if (playagain == "forget"){
+                        t.initializeTree();
+                        temp = t.root;
+                    }
+                    break;
+                } else {
+                    temp = temp->right;
+                }
             } else {
-                temp = temp->no;
+                cout<<"You did not provide a right answer. Lets start again."<<endl;
+                break;
             }
         }
-        if (ans == "yes"){
-            cout<<"You loose"<<endl;
-        } else {
-            string animal, question;
-            cout<<"You win! What was it?"<<endl;
-            cin>>animal;
-            cout<<"What question distinguishes a "<<animal<<" from hwak?\n";
-            getline(cin, question);
-            /*Add logic to add new node*/
-            cout<<"Thanks lets play again"<<endl;
-        }
-
     }
     return 0;
 }
